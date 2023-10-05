@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameState { MainMenu, GamePlay, Finish, Revive, Setting }
+public enum GameState { MainMenu, GamePlay, Finish, Setting }
 
 public class GameManager : Singleton<GameManager>
 {
@@ -33,11 +33,37 @@ public class GameManager : Singleton<GameManager>
         }
 
         //Init data
-        UserData.Ins.OnInitData();
+       // UserData.Ins.OnInitData();
+    }
+    void Start()
+    {
+        // OnInit();
+        ChangeState(GameState.MainMenu);
+        UIManager.Ins.OpenUI<MainMenu>();
+
     }
 
-    private void Start()
+    public void StartGame()
     {
-        UIManager.Ins.OpenUI<UIMainMenu>();
+        //  PlayerData.curWeaponID = 0;
+        //  PlayerData.curHatID = 0;
+        // if(PlayerPrefs.HasKey(Coins))
+        SoudManager.Ins.PlayThemSound("themeSound1");
+        PlayerData.Coins = 10000;
+
+        Debug.Log(PlayerData.Coins);
+        ChangeState(GameState.GamePlay);
+        RoomManager.Ins.OnInit();
+    }
+
+    public void EndGame()
+    {
+        SoudManager.Ins.themeSource.Stop();
+        //   Destroy(curRoom.gameObject, 0.2f);
+        ChangeState(GameState.Finish);
+        RoomManager.Ins.ClearEnemy();
+        UIManager.Ins.OpenUI<Fail>();
+       
+
     }
 }
